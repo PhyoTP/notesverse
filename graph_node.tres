@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://svayt8l1pl4e"]
+
+[ext_resource type="FontFile" uid="uid://3adqhboxcwet" path="res://fonts/HelveticaNeueBold.otf" id="1_2sn34"]
+[ext_resource type="FontFile" uid="uid://fl6qa516ys35" path="res://fonts/Inter-VariableFont_opsz,wght.ttf" id="2_7w26c"]
+
+[resource]
+GraphNodeTitleLabel/font_sizes/font_size = 32
+GraphNodeTitleLabel/fonts/font = ExtResource("1_2sn34")
+Label/fonts/font = ExtResource("2_7w26c")

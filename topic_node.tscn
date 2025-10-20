@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://8dif40jilaeh"]
+
+[ext_resource type="Theme" uid="uid://svayt8l1pl4e" path="res://graph_node.tres" id="1_4hqtk"]
+[ext_resource type="Script" uid="uid://cah4b083h1cis" path="res://topic_node.gd" id="2_c1ysx"]
+
+[node name="GraphNode" type="GraphNode"]
+offset_right = 176.0
+offset_bottom = 68.0
+theme = ExtResource("1_4hqtk")
+script = ExtResource("2_c1ysx")

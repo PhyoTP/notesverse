@@ -1,0 +1,14 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cvfi3q127thyu"]
+
+[ext_resource type="FontFile" uid="uid://fl6qa516ys35" path="res://fonts/Inter-VariableFont_opsz,wght.ttf" id="1_lgmnm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lgmnm"]
+bg_color = Color(0, 0, 0, 1)
+
+[resource]
+default_font = ExtResource("1_lgmnm")
+default_font_size = 24
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/styles/normal = SubResource("StyleBoxFlat_lgmnm")
+Label/colors/font_color = Color(0, 0, 0, 1)
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
