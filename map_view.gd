@@ -2,32 +2,35 @@ extends Control
 
 var map = {
 	"Structure": {
-		"examples": ["Giant Ionic", "Covalent", "Giant Metallic"],
-		"properties": {"thing":true}
+		"examples": ["Giant Ionic", "Covalent", "Giant Metallic"]
 	},
 	"Forces": {
 		"types": {
-			"Electrostatic": {
-				"relations": {
-					"between ...": "Ions"
-				}
-			},
-			"Covalent": {
-				"relations": {
-					"between ...": "Atoms"
-				},
-				"types": {
-					"Giant": {
-						"examples": ["Diamond", "Graphite"]
-					},
-					"Simple": {
-						"examples": ["Water", "Carbon Dioxide", "Methane"]
+			"Strength": {
+				"Electrostatic": {
+					"relations": {
+						"between ...": "Ions"
 					}
-				}
-			},
-			"Intermolecular": {
-				"relations": {
-					"between ...": "Molecules"
+				},
+				"Covalent": {
+					"relations": {
+						"between ...": "Atoms"
+					},
+					"types": {
+						"Size": {
+							"Giant": {
+								"examples": ["Diamond", "Graphite"]
+							},
+							"Simple": {
+								"examples": ["Water", "Carbon Dioxide", "Methane"]
+							}
+						}
+					}
+				},
+				"Intermolecular": {
+					"relations": {
+						"between ...": "Molecules"
+					}
 				}
 			}
 		}
@@ -61,23 +64,7 @@ func _ready() -> void:
 		newNode.init(map[topic])
 		if not graph_edit.get_node_or_null(topic):
 			graph_edit.add_child(newNode)
-		for prop in map[topic]:
-			if prop == "examples":
-				var index = newNode.get_child_count()
-				print(index)
-				var exampleLabel = Label.new()
-				exampleLabel.text = "Examples:"
-				newNode.add_child(exampleLabel)
-				print(index)
-				newNode.set_slot(index, false, 1, Color.LIME_GREEN, true, 1, Color.LIME_GREEN)
-				for example in map[topic][prop]:
-					var exampleNode = ensure_node(example)
-					var exampleIndex = exampleNode.get_child_count()
-					var exampleOfLabel = Label.new()
-					exampleOfLabel.text = "example of:"
-					exampleNode.add_child(exampleOfLabel)
-					exampleNode.set_slot(exampleIndex, true, 1, Color.LIME_GREEN, false, 1, Color.LIME_GREEN)
-					graph_edit.connect_node(topic, index, example, exampleIndex)
+		add_node(map[topic], newNode)
 	graph_edit.arrange_nodes()
 func ensure_node(topic: String) -> GraphNode:
 	var node = graph_edit.get_node_or_null(topic)
@@ -88,3 +75,43 @@ func ensure_node(topic: String) -> GraphNode:
 	new_node.title = topic
 	graph_edit.add_child(new_node)
 	return new_node
+func add_node(props: Dictionary, newNode: GraphNode):
+	for prop in props:
+		if prop == "examples":
+			var index = newNode.get_child_count()
+			var exampleLabel = Label.new()
+			exampleLabel.text = "Examples:"
+			newNode.add_child(exampleLabel)
+			newNode.set_slot(index, false, 1, Color.WHITE, true, 1, Color.LIME_GREEN)
+			for example in props[prop]:
+				var exampleNode = ensure_node(example)
+				var exampleIndex = exampleNode.get_child_count()
+				var exampleOfLabel = Label.new()
+				exampleOfLabel.text = "example of:"
+				exampleNode.add_child(exampleOfLabel)
+				exampleNode.set_slot(exampleIndex, true, 1, Color.LIME_GREEN, false, 1, Color.WHITE)
+				graph_edit.connect_node(newNode.name, newNode.get_output_port_count() - 1, example, exampleNode.get_input_port_count() - 1)
+		elif prop == "types":
+			for type in props[prop]:
+				var index = newNode.get_child_count()
+				var typeLabel = Label.new()
+				typeLabel.text = type + " types:"
+				newNode.add_child(typeLabel)
+				newNode.set_slot(index, false, 2, Color.WHITE, true, 2, Color.YELLOW)
+				for subtype in props[prop][type]:
+					var typeNode = node_scene.instantiate()
+					typeNode.name = newNode.name + "." + subtype
+					typeNode.title = subtype
+					typeNode.init(props[prop][type][subtype])
+					graph_edit.add_child(typeNode)
+					add_node(props[prop][type][subtype], typeNode)
+					var typeIndex = typeNode.get_child_count()
+					var subtypeLabel = Label.new()
+					subtypeLabel.text = type + " type of:"
+					typeNode.add_child(subtypeLabel)
+					typeNode.set_slot(typeIndex, true, 2, Color.YELLOW, false, 2, Color.WHITE)
+
+					# Count enabled left ports
+					
+
+					graph_edit.connect_node(newNode.name, newNode.get_output_port_count() - 1, typeNode.name, typeNode.get_input_port_count()-1)
