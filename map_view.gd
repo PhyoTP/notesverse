@@ -1,52 +1,35 @@
 extends Control
 
 var map = {
-	"Structure": {
-		"examples": ["Giant Ionic", "Covalent", "Giant Metallic"]
-	},
-	"Forces": {
-		"types": {
-			"Strength": {
-				"Electrostatic": {
-					"relations": {
-						"between ...": ["Ions"]
+	"node1": {
+		"examples": ["node1a","node1b"],
+		"relations": {
+			"words ... more words ...": [
+				"node2",
+				["node3","node4"]
+			]
+		},
+		"properties": {
+			"property": "value"
+		},
+		"types":{
+			"subtype": { 
+				"subtype1": {
+					"properties": {
+						"property": true
 					}
 				},
-				"Covalent": {
-					"relations": {
-						"between ...": ["Atoms"]
-					},
-					"types": {
-						"Size": {
-							"Giant": {
-								"examples": ["Diamond", "Graphite"]
-							},
-							"Simple": {
-								"examples": ["Water", "Carbon Dioxide", "Methane"]
-							}
-						}
-					}
-				},
-				"Intermolecular": {
-					"relations": {
-						"between ...": ["Molecules"]
+				"subtype2": {
+					"properties": {
+						"property": false
 					}
 				}
 			}
 		}
 	},
-	"Diamond": {
-		"properties": {
-			"can conduct": false,
-			"has mobile electrons": false,
-			"bonds": 4
-		}
-	},
-	"Graphite": {
-		"properties": {
-			"can conduct": true,
-			"has mobile electrons": true,
-			"bonds": 3
+	"node2": { 
+		"relations": {
+			"words ...": ["node1_subtype2"]
 		}
 	}
 }
@@ -117,14 +100,21 @@ func add_node(props: Dictionary, newNode: GraphNode):
 				var relators = [newNode.name] + props[prop][relation]
 				for index in range(len(relators)):
 					var relator = relators[index]
-					var relatorNode = ensure_node(relator)
-					var relationIndex = relatorNode.get_child_count()
-					var relationLabel = Label.new()
-					relationLabel.text = (relations[index] if index < len(relations) else "").strip_edges() + ":"
-					relatorNode.add_child(relationLabel)
-					relatorNode.set_slot(relationIndex, index != 0, 3, Color.DODGER_BLUE, index + 1 < len(relators), 3, Color.DODGER_BLUE)
-					if index > 0:
-						var lastRelator := ensure_node(relators[index-1])
-						graph_edit.connect_node(lastRelator.name, lastRelator.get_output_port_count() - 1, relator, relatorNode.get_input_port_count() - 1)
+					if relator is not Array:
+						relator = [relator]
+					for i in relator:
+						var relatorNode = ensure_node(i)
+						var relationIndex = relatorNode.get_child_count()
+						var relationLabel = Label.new()
+						relationLabel.text = (relations[index] if index < len(relations) else "").strip_edges() + ":"
+						relatorNode.add_child(relationLabel)
+						relatorNode.set_slot(relationIndex, index != 0, 3, Color.DODGER_BLUE, index + 1 < len(relators), 3, Color.DODGER_BLUE)
+						if index > 0:
+							var lastRelator = relators[index-1]
+							if lastRelator is not Array:
+								lastRelator = [lastRelator]
+							for j in lastRelator:
+								var last := ensure_node(j)
+								graph_edit.connect_node(last.name, last.get_output_port_count() - 1, i, relatorNode.get_input_port_count() - 1)
 					
 				
