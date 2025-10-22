@@ -36,19 +36,21 @@ var map = {
 @onready var node_scene = preload("res://topic_node.tscn")
 @onready var graph_edit = $GraphEdit
 func _ready() -> void:
-	for topic in map:
-		var newNode: GraphNode
-		if graph_edit.get_node_or_null(topic):
-			newNode = graph_edit.get_node(topic)
-		else:
-			newNode = node_scene.instantiate()
-			newNode.name = topic
-			newNode.title = topic
-		newNode.init(map[topic])
-		if not graph_edit.get_node_or_null(topic):
-			graph_edit.add_child(newNode)
-		add_node(map[topic], newNode)
-	graph_edit.arrange_nodes()
+	visibility_changed.connect(_on_visibility_changed)
+	if visible:
+		for topic in map:
+			var newNode: GraphNode
+			if graph_edit.get_node_or_null(topic):
+				newNode = graph_edit.get_node(topic)
+			else:
+				newNode = node_scene.instantiate()
+				newNode.name = topic
+				newNode.title = topic
+			newNode.init(map[topic])
+			if not graph_edit.get_node_or_null(topic):
+				graph_edit.add_child(newNode)
+			add_node(map[topic], newNode)
+		graph_edit.arrange_nodes()
 func ensure_node(topic: String) -> GraphNode:
 	var node = graph_edit.get_node_or_null(topic)
 	if node:
@@ -117,4 +119,7 @@ func add_node(props: Dictionary, newNode: GraphNode):
 								var last := ensure_node(j)
 								graph_edit.connect_node(last.name, last.get_output_port_count() - 1, i, relatorNode.get_input_port_count() - 1)
 					
-				
+func _on_visibility_changed() -> void:
+	if visible:
+		await get_tree().process_frame
+		_ready()
