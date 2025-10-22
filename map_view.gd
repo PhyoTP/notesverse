@@ -9,12 +9,12 @@ var map = {
 			"Strength": {
 				"Electrostatic": {
 					"relations": {
-						"between ...": "Ions"
+						"between ...": ["Ions"]
 					}
 				},
 				"Covalent": {
 					"relations": {
-						"between ...": "Atoms"
+						"between ...": ["Atoms"]
 					},
 					"types": {
 						"Size": {
@@ -29,7 +29,7 @@ var map = {
 				},
 				"Intermolecular": {
 					"relations": {
-						"between ...": "Molecules"
+						"between ...": ["Molecules"]
 					}
 				}
 			}
@@ -110,8 +110,21 @@ func add_node(props: Dictionary, newNode: GraphNode):
 					subtypeLabel.text = type + " type of:"
 					typeNode.add_child(subtypeLabel)
 					typeNode.set_slot(typeIndex, true, 2, Color.YELLOW, false, 2, Color.WHITE)
-
-					# Count enabled left ports
-					
-
 					graph_edit.connect_node(newNode.name, newNode.get_output_port_count() - 1, typeNode.name, typeNode.get_input_port_count()-1)
+		elif prop == "relations":
+			for relation in props[prop]:
+				var relations = relation.split("...")
+				var relators = [newNode.name] + props[prop][relation]
+				for index in range(len(relators)):
+					var relator = relators[index]
+					var relatorNode = ensure_node(relator)
+					var relationIndex = relatorNode.get_child_count()
+					var relationLabel = Label.new()
+					relationLabel.text = (relations[index] if index < len(relations) else "").strip_edges() + ":"
+					relatorNode.add_child(relationLabel)
+					relatorNode.set_slot(relationIndex, index != 0, 3, Color.DODGER_BLUE, index + 1 < len(relators), 3, Color.DODGER_BLUE)
+					if index > 0:
+						var lastRelator := ensure_node(relators[index-1])
+						graph_edit.connect_node(lastRelator.name, lastRelator.get_output_port_count() - 1, relator, relatorNode.get_input_port_count() - 1)
+					
+				
