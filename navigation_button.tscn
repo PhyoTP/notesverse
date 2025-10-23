@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://c23cnwu8mcv04"]
+
+[ext_resource type="FontFile" uid="uid://fl6qa516ys35" path="res://fonts/Inter-VariableFont_opsz,wght.ttf" id="1_55npq"]
+[ext_resource type="Theme" uid="uid://cvfi3q127thyu" path="res://text.tres" id="2_bachm"]
+
+[sub_resource type="Theme" id="Theme_muiyj"]
+default_font = ExtResource("1_55npq")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a87fb"]
+content_margin_left = 10.0
+bg_color = Color(0.5294118, 0.80784315, 0.92156863, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[node name="Button" type="Button"]
+custom_minimum_size = Vector2(0, 100)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 26.0
+grow_horizontal = 2
+theme = SubResource("Theme_muiyj")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_a87fb")
+theme_override_styles/hover = SubResource("StyleBoxFlat_a87fb")
+text = "Kinetic Particle Theory"
+alignment = 0
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -10.0
+offset_bottom = 10.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("2_bachm")
+text = ">"
